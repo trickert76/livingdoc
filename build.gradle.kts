@@ -4,6 +4,7 @@ plugins {
 	id("com.diffplug.gradle.spotless")
 	id("org.jetbrains.dokka")
 	kotlin("jvm")
+	id("maven-publish")
 }
 
 rootProject.description = "LivingDoc"
@@ -159,4 +160,51 @@ tasks.create<JacocoReport>("codeCoverageReport") {
 	}
 
 	dependsOn(project.getTasksByName("test", true))
+}
+
+publishing {
+	publications {
+		maven(MavenPublication) {
+			pom {
+				name = project.group + ":" project.name
+				description = 'Write and manage your acceptance tests in any format you like incl. in Atlassian Confluence.'
+				url = 'https://github.com/LivingDoc/livingdoc'
+
+				licenses {
+					license {
+						name = 'Apache License 2.0'
+						url = 'https://github.com/LivingDoc/livingdoc/blob/master/LICENSE'
+					}
+				}
+
+				organization {
+					name = 'LivingDoc'
+					url = 'http://livingdoc.org/'
+				}
+
+				issueManagement {
+					system = 'Github'
+					url = 'https://github.com/LivingDoc/livingdoc/issues'
+				}
+
+				scm {
+					connection = 'scm:git:https://github.com/LivingDoc/livingdoc.git'
+					developerConnection = 'scm:git:https://github.com/LivingDoc/livingdoc.git'
+					url = 'https://github.com/LivingDoc/livingdoc'
+				}
+			}
+		}
+	}
+
+	repositories {
+		maven {
+			name = "OSSRH"
+			url = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+			credentials {
+				username = System.getenv("MAVEN_USERNAME")
+				password = System.getenv("MAVEN_PASSWORD")
+			}
+
+		}
+	}
 }
